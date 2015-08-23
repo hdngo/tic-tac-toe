@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		name: "O",
 		score: 0
 	};
+
 	var currentPlayer = playerX;
 
 	var playerXScore = document.getElementById('X');
@@ -23,7 +24,6 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	var resetButton = document.getElementById('reset-btn')
 	resetButton.addEventListener('click', resetScores)
-
 
 	var assortedSquares = [[squares[0], squares[1], squares[2]], [squares[3], squares[4], squares[5]], [squares[6], squares[7], squares[8]]]
 
@@ -50,7 +50,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			playerMarker = makePlayerMarker(marker)
 			this.appendChild(playerMarker);
 			this.classList.add('taken');
-			checkForWin();
+			checkForWinner();
 			turn++;
 		}
 	}
@@ -120,7 +120,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 
-	function checkForWin(){
+	function checkForWinner(){
 		if(checkLeftDiagonal() || checkRightDiagonal()){
 			alert("we have a winner");
 			updateWins();
