@@ -6,9 +6,17 @@ p.player-marker{
 	font-size:2rem;
 }
 
-#new-game-btn{
-	display:block;
-	margin:0 auto;
+#control-window{
+	width: 40%;
+	margin: 0 auto;
+}
+
+ul{
+	list-style: none;
+}
+
+ul li{
+	display: inline-block;
 }
 
 td{
