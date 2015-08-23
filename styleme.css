@@ -15,4 +15,12 @@ td{
 	height: 150px;
 	width: 150px;
 	border: 1px solid blue;
+	text-align:center;
+	font-size:4em;
+}
+
+
+td:hover{
+	background-color: #c8edf4;
+	opacity: .3;
 }

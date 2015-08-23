@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			playerMarker = makePlayerMarker(marker)
 			event.target.appendChild(playerMarker);
 			event.target.classList.add('taken');
+			// checkLeftDiagonal();
 			checkForWin();
 		turn++;
 		}
@@ -72,15 +73,45 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	function checkLeftDiagonal(){
-		for (var rowIndex = 0; rowIndex < assortedSquares.length; rowIndex++){
+		var diagonal = [];
+		for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
+			diagonal.push(assortedSquares[cellIndex][cellIndex])
+		}
+		console.log('diagonal')
+		console.log(diagonal)
+
+		if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
+			if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
+				return true
+			}
+		}
+		else {
+			return false
 		}
 	}
 
 	function checkRightDiagonal(){
+		var diagonal = [];
+		for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
+			diagonal.push(assortedSquares[cellIndex][assortedSquares.length - 1 - cellIndex])
+		}
 
+		if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
+			if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
+				return true
+			}
+		}
+		else {
+			return false
+		}
 	}
 
+
+
 	function checkForWin(){
+		if(checkLeftDiagonal() || checkRightDiagonal()){
+			alert("we have a winner")
+		}
 		for (var rowColIndex = 0; rowColIndex < assortedSquares.length; rowColIndex++){
 			if(checkRow(assortedSquares[rowColIndex]) || checkColumn(rowColIndex)){
 				alert("we have a winner")
