@@ -70,14 +70,15 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	function checkRow(row){
-		if(row[0].classList.contains('taken') && row[1].classList.contains('taken') && row[2].classList.contains('taken')){
-			if (row[0].innerText === row[1].innerText && row[1].innerText === row[2].innerText){
-				return true
-			}
-		}
-		else{
-			return false
-		}
+		// if(row[0].classList.contains('taken') && row[1].classList.contains('taken') && row[2].classList.contains('taken')){
+		// 	if (row[0].innerText === row[1].innerText && row[1].innerText === row[2].innerText){
+		// 		return true
+		// 	}
+		// }
+		// else{
+		// 	return false
+		// }
+		return checkThreeCells(row)
 	}
 
 	function checkColumn(columnNumber){
@@ -85,7 +86,8 @@ document.addEventListener("DOMContentLoaded", function(){
 		for(var rowNumber = 0; rowNumber < assortedSquares.length; rowNumber++){
 			column.push(assortedSquares[rowNumber][columnNumber])
 		}
-		return checkRow(column)
+		// return checkRow(column)
+		return checkThreeCells(column)
 	}
 
 	function checkLeftDiagonal(){
@@ -94,14 +96,15 @@ document.addEventListener("DOMContentLoaded", function(){
 			diagonal.push(assortedSquares[cellIndex][cellIndex])
 		}
 
-		if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
-			if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
-				return true
-			}
-		}
-		else {
-			return false
-		}
+		// if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
+		// 	if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
+		// 		return true
+		// 	}
+		// }
+		// else {
+		// 	return false
+		// }
+		return checkThreeCells(diagonal);
 	}
 
 	function checkRightDiagonal(){
@@ -110,8 +113,23 @@ document.addEventListener("DOMContentLoaded", function(){
 			diagonal.push(assortedSquares[cellIndex][assortedSquares.length - 1 - cellIndex])
 		}
 
-		if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
-			if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
+		// if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
+		// 	if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
+		// 		return true
+		// 	}
+		// }
+		// else {
+		// 	return false
+		// }
+		return checkThreeCells(diagonal);
+	}
+
+	//refactoring
+	//take out the if(classlist) and abstract it
+	//
+	function checkThreeCells(arrayOfThreeCells){
+		if(arrayOfThreeCells[0].classList.contains('taken') && arrayOfThreeCells[1].classList.contains('taken') && arrayOfThreeCells[2].classList.contains('taken')){
+			if(arrayOfThreeCells[0].innerText == arrayOfThreeCells[1].innerText && arrayOfThreeCells[1].innerText == arrayOfThreeCells[2].innerText){
 				return true
 			}
 		}
