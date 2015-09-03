@@ -19,6 +19,8 @@ document.addEventListener("DOMContentLoaded", function(){
 	
 	var squares = document.getElementsByClassName('square')
 
+	var takenSquares = document.getElementsByClassName('square taken');
+
 	var newGameButton = document.getElementById('new-game-btn')
 	newGameButton.addEventListener('click', newGame)
 
@@ -47,11 +49,11 @@ document.addEventListener("DOMContentLoaded", function(){
 				this.classList.add('taken');
 				checkForWinner();
 				turn++;
-				takenSquares = document.getElementsByClassName('square taken')
 				if(takenSquares.length !== 9){
 				makeComputerMove();
 				}
-				else{
+				else if(takenSquares.length === 9 & gameOver === false){
+					alert('tie!')
 					gameOver = true;
 				}
 			}
@@ -75,6 +77,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		checkForWinner();
 		turn++;
 	}
+
 
 	function makePlayerMarker(markerValue){
 		marker = document.createTextNode(markerValue)
@@ -139,7 +142,10 @@ document.addEventListener("DOMContentLoaded", function(){
 				return
 			}
 		}
+		return false
 	}
+
+
 
 	function newGame(){
 		for(var cellIndex = 0; cellIndex < squares.length; cellIndex++){
