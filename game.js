@@ -47,7 +47,13 @@ document.addEventListener("DOMContentLoaded", function(){
 				this.classList.add('taken');
 				checkForWinner();
 				turn++;
+				takenSquares = document.getElementsByClassName('square taken')
+				if(takenSquares.length !== 9){
 				makeComputerMove();
+				}
+				else{
+					gameOver = true;
+				}
 			}
 		}
 	}
@@ -139,6 +145,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				alert("we have a winner")
 				updateWins();
 				gameOver = true;
+				return
 			}
 		}
 	}
