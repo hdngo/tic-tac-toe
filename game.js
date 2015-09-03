@@ -42,17 +42,32 @@ document.addEventListener("DOMContentLoaded", function(){
 			if (turn % 2 == 0){
 				marker = "X";
 				currentPlayer = playerX;
+				playerMarker = makePlayerMarker(marker)
+				this.appendChild(playerMarker);
+				this.classList.add('taken');
+				checkForWinner();
+				turn++;
+				makeComputerMove();
 			}
-			else {
-				marker = "O";
-				currentPlayer = playerO;
-			}
-			playerMarker = makePlayerMarker(marker)
-			this.appendChild(playerMarker);
-			this.classList.add('taken');
-			checkForWinner();
-			turn++;
 		}
+	}
+
+	
+	function makeComputerMove(){
+		if(gameOver){
+			return
+		}
+		var randomSquareIndex = Math.floor(Math.random() * 9)
+		while (checkSquare(squares[randomSquareIndex])){
+			randomSquareIndex =	Math.floor(Math.random() * 9)
+		}
+		marker = "O";
+		currentPlayer = playerO;
+		playerMarker = makePlayerMarker(marker)
+		squares[randomSquareIndex].appendChild(playerMarker);
+		squares[randomSquareIndex].classList.add('taken');
+		checkForWinner();
+		turn++;
 	}
 
 	function makePlayerMarker(markerValue){
@@ -70,14 +85,6 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	function checkRow(row){
-		// if(row[0].classList.contains('taken') && row[1].classList.contains('taken') && row[2].classList.contains('taken')){
-		// 	if (row[0].innerText === row[1].innerText && row[1].innerText === row[2].innerText){
-		// 		return true
-		// 	}
-		// }
-		// else{
-		// 	return false
-		// }
 		return checkThreeCells(row)
 	}
 
@@ -86,47 +93,30 @@ document.addEventListener("DOMContentLoaded", function(){
 		for(var rowNumber = 0; rowNumber < assortedSquares.length; rowNumber++){
 			column.push(assortedSquares[rowNumber][columnNumber])
 		}
-		// return checkRow(column)
 		return checkThreeCells(column)
 	}
 
 	function checkLeftDiagonal(){
-		var diagonal = [];
-		for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
-			diagonal.push(assortedSquares[cellIndex][cellIndex])
-		}
-
-		// if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
-		// 	if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
-		// 		return true
-		// 	}
-		// }
-		// else {
-		// 	return false
-		// }
+		
+		var diagonal = [assortedSquares[0][0], assortedSquares[1][1], assortedSquares[2][2]]
+		console.log(diagonal)
 		return checkThreeCells(diagonal);
+		// longer way of creating diagonal
+		// var diagonal = [];
+		// for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
+		// 	diagonal.push(assortedSquares[cellIndex][cellIndex])
+		// }
 	}
 
 	function checkRightDiagonal(){
-		var diagonal = [];
-		for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
-			diagonal.push(assortedSquares[cellIndex][assortedSquares.length - 1 - cellIndex])
-		}
-
-		// if(diagonal[0].classList.contains('taken') && diagonal[1].classList.contains('taken') && diagonal[2].classList.contains('taken')){
-		// 	if(diagonal[0].innerText == diagonal[1].innerText && diagonal[1].innerText == diagonal[2].innerText){
-		// 		return true
-		// 	}
-		// }
-		// else {
-		// 	return false
-		// }
+		var diagonal = [assortedSquares[0][2], assortedSquares[1][1], assortedSquares[2][0]]
 		return checkThreeCells(diagonal);
+		// longer way of creating diagonal
+		// for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
+		// 	diagonal.push(assortedSquares[cellIndex][assortedSquares.length - 1 - cellIndex])
+		// }
 	}
 
-	//refactoring
-	//take out the if(classlist) and abstract it
-	//
 	function checkThreeCells(arrayOfThreeCells){
 		if(arrayOfThreeCells[0].classList.contains('taken') && arrayOfThreeCells[1].classList.contains('taken') && arrayOfThreeCells[2].classList.contains('taken')){
 			if(arrayOfThreeCells[0].innerText == arrayOfThreeCells[1].innerText && arrayOfThreeCells[1].innerText == arrayOfThreeCells[2].innerText){
@@ -159,6 +149,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			squares[cellIndex].classList.remove('taken');
 		}
 		gameOver = false;
+		turn = 0;
 	}
 
 	function updateWins(){
