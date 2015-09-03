@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			if (turn % 2 == 0){
 				marker = "X";
 				currentPlayer = playerX;
-				playerMarker = makePlayerMarker(marker)
+				playerMarker = makePlayerMarker(marker) 
 				this.appendChild(playerMarker);
 				this.classList.add('taken');
 				checkForWinner();
@@ -107,20 +107,11 @@ document.addEventListener("DOMContentLoaded", function(){
 		var diagonal = [assortedSquares[0][0], assortedSquares[1][1], assortedSquares[2][2]]
 		console.log(diagonal)
 		return checkThreeCells(diagonal);
-		// longer way of creating diagonal
-		// var diagonal = [];
-		// for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
-		// 	diagonal.push(assortedSquares[cellIndex][cellIndex])
-		// }
 	}
 
 	function checkRightDiagonal(){
 		var diagonal = [assortedSquares[0][2], assortedSquares[1][1], assortedSquares[2][0]]
 		return checkThreeCells(diagonal);
-		// longer way of creating diagonal
-		// for (var cellIndex = 0; cellIndex < assortedSquares.length; cellIndex++){
-		// 	diagonal.push(assortedSquares[cellIndex][assortedSquares.length - 1 - cellIndex])
-		// }
 	}
 
 	function checkThreeCells(arrayOfThreeCells){
