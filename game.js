@@ -38,7 +38,8 @@ document.addEventListener("DOMContentLoaded", function(){
 			return
 		}
 		if (checkSquare(this)){
-			alert("that square has been taken already, pick another one!")
+			// alert("that square has been taken already, pick another one!")
+			console.log("that square has been taken already, pick another one!")
 		}
 		else{
 			if (turn % 2 == 0){
@@ -47,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function(){
 				playerMarker = makePlayerMarker(marker) 
 				this.appendChild(playerMarker);
 				this.classList.add('taken');
-				checkForWinner();
+				checkForWinner(assortedSquares);
 				turn++;
 				if(takenSquares.length !== 9){
 				makeComputerMove();
@@ -74,7 +75,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		playerMarker = makePlayerMarker(marker)
 		squares[randomSquareIndex].appendChild(playerMarker);
 		squares[randomSquareIndex].classList.add('taken');
-		checkForWinner();
+		checkForWinner(assortedSquares);
 		turn++;
 	}
 
@@ -105,15 +106,15 @@ document.addEventListener("DOMContentLoaded", function(){
 		return checkThreeCells(column)
 	}
 
-	function checkLeftDiagonal(){
-		
-		var diagonal = [assortedSquares[0][0], assortedSquares[1][1], assortedSquares[2][2]]
+	function checkLeftDiagonal(board){
+		console.log(board)
+		var diagonal = [board[0][0], board[1][1], board[2][2]]
 		console.log(diagonal)
 		return checkThreeCells(diagonal);
 	}
 
-	function checkRightDiagonal(){
-		var diagonal = [assortedSquares[0][2], assortedSquares[1][1], assortedSquares[2][0]]
+	function checkRightDiagonal(board){
+		var diagonal = [board[0][2], board[1][1], board[2][0]]
 		return checkThreeCells(diagonal);
 	}
 
@@ -128,24 +129,26 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 
-	function checkForWinner(){
-		if(checkLeftDiagonal() || checkRightDiagonal()){
-			alert(currentPlayer.name + " wins!");
-			updateWins();
+	function checkForWinner(board){
+		if(checkLeftDiagonal(board) || checkRightDiagonal(board)){
+			// alert(currentPlayer.name + " wins!");
+			// updateWins();
 			gameOver = true;
+			return true
 		}
-		for (var rowColIndex = 0; rowColIndex < assortedSquares.length; rowColIndex++){
-			if(checkRow(assortedSquares[rowColIndex]) || checkColumn(rowColIndex)){
-				alert(currentPlayer.name + " wins!")
-				updateWins();
+		for (var rowColIndex = 0; rowColIndex < board.length; rowColIndex++){
+			if(checkRow(board[rowColIndex]) || checkColumn(rowColIndex)){
+				// alert(currentPlayer.name + " wins!")
+				// updateWins();
 				gameOver = true;
-				return
+				return true
 			}
 		}
 		return false
 	}
 
 
+	//extraneous functionality to reset game and keep track of scores
 
 	function newGame(){
 		for(var cellIndex = 0; cellIndex < squares.length; cellIndex++){
