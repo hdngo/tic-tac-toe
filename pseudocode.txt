@@ -1,0 +1,49 @@
+Implement the MiniMax algorithm which takes into account the 
+best possible move for the current player.
+
+The algorithm works essentially by having two players; player one who takes on the role of maximizing the total possible score based on a move,
+and player two who takes on the role of minimizing/reducing the total possible score based on a move.
+
+My current understanding given a move, the max player will check all possible moves and see which one will lead to the largest score. That score however, is determined by subsequent moves and choices made by the minimizing player who tries to lower the summed score after the move/decision tree is fully traversed. Yes, I basically just tried to reword the 2nd paragraph.
+
+One thing that I think I'll have to keep in mind for an unbeatable AI is to keep track of the number of iterations/loops made, because the AI should make the best move as soon as possible, rather than make any move that yields the same "score".
+
+Thoughts as to how the process will be implemented:
+-assume the player goes first
+
+- Player makes first move
+- Save the state of the board
+- generate a hash or something to store the total score for each possible move (so there should be 8 scores)
+- Generate (Board - Taken spaces) copies of the current board (so 8)
+- for each of the copy of the board do the following:
+-- until the copied board is completely filled out:
+--- simulate filling out each empty spot on the board
+--- keep track of the number of iterations
+---- for each simulation, "save" the new board and repeat the process 
+----- once the board is filled out, if the computer wins, return a score of 10, otherwise return a score of -10 if player wins, or 0 if its a tie
+
+//demo code with recursion experiments
+var pop = function(array){
+ if(array.length === 0){
+ 	return 'hello'
+	}
+	array.pop()
+	console.log('pop')
+	return pop(array)
+}
+
+//demo code with array_w_index pure JS
+var max_w_index = function(array){
+maxIndex = 0;
+maxVal = array[0] 
+maxset = [maxIndex, maxVal]
+for(var i = 0; i < array.length; i++){
+ if(array[i] > maxVal){
+ maxIndex = i;
+ maxVal = array[i]
+}
+}
+maxset = [maxIndex, maxVal]
+return maxset
+}
+

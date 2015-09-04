@@ -130,13 +130,13 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	function checkForWinner(){
 		if(checkLeftDiagonal() || checkRightDiagonal()){
-			alert("we have a winner");
+			alert(currentPlayer.name + " wins!");
 			updateWins();
 			gameOver = true;
 		}
 		for (var rowColIndex = 0; rowColIndex < assortedSquares.length; rowColIndex++){
 			if(checkRow(assortedSquares[rowColIndex]) || checkColumn(rowColIndex)){
-				alert("we have a winner")
+				alert(currentPlayer.name + " wins!")
 				updateWins();
 				gameOver = true;
 				return
