@@ -63,6 +63,17 @@ document.addEventListener("DOMContentLoaded", function(){
 
 	
 	function makeComputerMove(){
+		// working on implementing simulation of unbeatable computer moves
+		var simulationBoard = squares;
+		var assortedSimulatedSquares = [[simulationBoard[0], simulationBoard[1], simulationBoard[2]], [simulationBoard[3], simulationBoard[4], simulationBoard[5]], [simulationBoard[6], simulationBoard[7], simulationBoard[8]]]
+		// console.log(grabAvailableSquareIndices(simulationBoard));
+		var availableSquares = grabAvailableSquareIndices(simulationBoard)
+		// if (availableSquares.length === 2){
+		// }
+		// end
+		debugger
+
+		// move if gameOver above simulation part
 		if(gameOver){
 			return
 		}
@@ -79,6 +90,24 @@ document.addEventListener("DOMContentLoaded", function(){
 		turn++;
 	}
 
+	function grabAvailableSquareIndices(board){
+		console.log(board)
+		var availableIndices = [];
+		for(var boardIndex = 0; boardIndex < board.length; boardIndex++){
+			if (board[boardIndex].classList.length === 1){
+				availableIndices.push(boardIndex)
+			}
+		}
+		return availableIndices
+	}
+
+	function makeMinimumChoice(){
+		// for a given array/hash where each element has a cell index and score, pick the cell index with the lowest score value
+	}
+
+	function makeMaximumChoice(){
+		// for a given array/hash where each element has a cell index and score, pick the cell index with the lowest score value
+	}
 
 	function makePlayerMarker(markerValue){
 		marker = document.createTextNode(markerValue)
@@ -107,9 +136,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	function checkLeftDiagonal(board){
-		console.log(board)
 		var diagonal = [board[0][0], board[1][1], board[2][2]]
-		console.log(diagonal)
 		return checkThreeCells(diagonal);
 	}
 
