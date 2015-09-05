@@ -64,14 +64,21 @@ document.addEventListener("DOMContentLoaded", function(){
 	
 	function makeComputerMove(){
 		// working on implementing simulation of unbeatable computer moves
+		var currentTurnNumber = turn;
 		var simulationBoard = squares;
 		var assortedSimulatedSquares = [[simulationBoard[0], simulationBoard[1], simulationBoard[2]], [simulationBoard[3], simulationBoard[4], simulationBoard[5]], [simulationBoard[6], simulationBoard[7], simulationBoard[8]]]
-		// console.log(grabAvailableSquareIndices(simulationBoard));
-		var availableSquares = grabAvailableSquareIndices(simulationBoard)
-		// if (availableSquares.length === 2){
-		// }
-		// end
-		debugger
+
+		availableSquares = grabAvailableSquareIndices(simulationBoard)
+
+		movesAndScoresRecord = {}
+		for(var availableSquareIndex = 0; availableSquareIndex < availableSquares.length; availableSquareIndex++){
+			movesAndScoresRecord[availableSquareIndex] = 0;
+		}
+
+		// for each option, make a move
+		for(var availableSquareIndex = 0; availableSquareIndex < availableSquares.length; availableSquareIndex++){
+			simulateMoveChain(simulationBoard, availableSquareIndex, movesAndScoresRecord)
+		}
 
 		// move if gameOver above simulation part
 		if(gameOver){
@@ -90,8 +97,41 @@ document.addEventListener("DOMContentLoaded", function(){
 		turn++;
 	}
 
+	function simulateMoveChain(board, squareIndex, currentMoveAndScoresRecord, fakeTurn, boardStatus){
+
+		//base case - return variable score if available moves left is 2
+		// if(grabAvailableSquareIndices(board).length === 2){
+		// 	console.log('LAST MOVE BRUH')
+		// }
+
+
+
+		fakeTurn = typeof(fakeTurn) == 'undefined' ?  1 : fakeTurn;
+
+		// here is where i need to recurse and go through the board 
+		var marker;
+		if (fakeTurn % 2 === 0){
+			//simulate player move
+			marker = "X";
+			playerMarker = makePlayerMarker(marker) 
+		}
+		else{
+			marker = "O";
+			playerMarker = makePlayerMarker(marker) 
+		}
+		// for(var i = 0; i<board.length; i++){
+			// console.log('hi')
+			// console.log(board[1])
+			// squares[1].appendChild(playerMarker)
+			// squares[1].classList.add('taken')
+		// }
+    
+
+		// simulateMoveChain(board, squareIndex, currentMoveAndScoresRecord, fakeTurn + 1)
+	}
+
 	function grabAvailableSquareIndices(board){
-		console.log(board)
+		// console.log(board)
 		var availableIndices = [];
 		for(var boardIndex = 0; boardIndex < board.length; boardIndex++){
 			if (board[boardIndex].classList.length === 1){
@@ -101,18 +141,44 @@ document.addEventListener("DOMContentLoaded", function(){
 		return availableIndices
 	}
 
-	function makeMinimumChoice(){
+	function makeMaximumChoice(moveScoreHash){
 		// for a given array/hash where each element has a cell index and score, pick the cell index with the lowest score value
-	}
-
-	function makeMaximumChoice(){
-		// for a given array/hash where each element has a cell index and score, pick the cell index with the lowest score value
+		moveScoreHashKeys = Object.keys(moveScoreHash)
+		maxScore = moveScoreHash[moveScoreHashKeys[0]]
+		indexOfOptimalSquare = moveScoreHashKeys[0]
+		for(squareIndex in moveScoreHash){
+			
+			if(moveScoreHash[squareIndex] > maxScore){
+				maxScore = moveScoreHash[squareIndex]
+				indexOfOptimalSquare = squareIndex - 1;
+				//subtract 1 because the actual board array starts with a 0 index
+			}
+		}
+		// console.log(indexOfOptimalSquare)
 	}
 
 	function makePlayerMarker(markerValue){
 		marker = document.createTextNode(markerValue)
 		return marker
 	}
+
+	function makeMinimumChoice(moveScoreHash){
+
+		// for a given array/hash where each element has a cell index and score, pick the cell index with the lowest score value
+
+		moveScoreHashKeys = Object.keys(moveScoreHash)
+		var minScore = moveScoreHash[moveScoreHashKeys[0]]
+		var indexOfOptimalSquare = moveScoreHashKeys[0]
+		for(squareIndex in moveScoreHash){
+			
+			if(moveScoreHash[squareIndex] < minScore){
+				minScore = moveScoreHash[squareIndex]
+				indexOfOptimalSquare = squareIndex - 1;
+			}
+		}
+		return indexOfOptimalSquare
+	}
+
 
 	function checkSquare(square){
 		if (square.classList.contains('taken')){
@@ -127,21 +193,26 @@ document.addEventListener("DOMContentLoaded", function(){
 		return checkThreeCells(row)
 	}
 
-	function checkColumn(columnNumber){
+	function checkColumn(columnNumber, assortedBoard){
 		var column = [];
-		for(var rowNumber = 0; rowNumber < assortedSquares.length; rowNumber++){
-			column.push(assortedSquares[rowNumber][columnNumber])
+		for(var rowNumber = 0; rowNumber < assortedBoard.length; rowNumber++){
+			column.push(assortedBoard[rowNumber][columnNumber])
 		}
 		return checkThreeCells(column)
 	}
 
-	function checkLeftDiagonal(board){
-		var diagonal = [board[0][0], board[1][1], board[2][2]]
+	function checkLeftDiagonal(assortedBoard){
+		var diagonal = [assortedBoard[0][0], assortedBoard[1][1], assortedBoard[2][2]]
 		return checkThreeCells(diagonal);
 	}
 
-	function checkRightDiagonal(board){
-		var diagonal = [board[0][2], board[1][1], board[2][0]]
+	function sortBoard(board){
+		sortedBoard = [[board[0], board[1], board[2]], [board[3], board[4], board[5]], [board[6], board[7], board[8]]]
+		return sortedBoard
+	}
+
+	function checkRightDiagonal(assortedBoard){
+		var diagonal = [assortedBoard[0][2], assortedBoard[1][1], assortedBoard[2][0]]
 		return checkThreeCells(diagonal);
 	}
 
@@ -156,17 +227,17 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 
-	function checkForWinner(board){
-		if(checkLeftDiagonal(board) || checkRightDiagonal(board)){
-			// alert(currentPlayer.name + " wins!");
-			// updateWins();
+	function checkForWinner(assortedBoard){
+		if(checkLeftDiagonal(assortedBoard) || checkRightDiagonal(assortedBoard)){
+			alert(currentPlayer.name + " wins!");
+			updateWins();
 			gameOver = true;
 			return true
 		}
-		for (var rowColIndex = 0; rowColIndex < board.length; rowColIndex++){
-			if(checkRow(board[rowColIndex]) || checkColumn(rowColIndex)){
-				// alert(currentPlayer.name + " wins!")
-				// updateWins();
+		for (var rowColIndex = 0; rowColIndex < assortedBoard.length; rowColIndex++){
+			if(checkRow(assortedBoard[rowColIndex]) || checkColumn(rowColIndex, assortedBoard)){
+				alert(currentPlayer.name + " wins!")
+				updateWins();
 				gameOver = true;
 				return true
 			}
