@@ -33,18 +33,23 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	function makePlayerMove(){
-		if(this.innerText === ''){
-			letter = document.createTextNode(newGame.currentPlayer)
-			this.appendChild(letter)
-			newGame.switchPlayers();
-			newGame.makeComputerMove();
+		if(newGame.winner){
+			return
 		}
 		else{
-			alert('invalid move')
+			if(this.innerText === ''){
+				letter = document.createTextNode(newGame.currentPlayer)
+				this.appendChild(letter)
+				newGame.checkForWinner();
+				newGame.switchPlayers();
+				// newGame.makeComputerMove();
+			}
+			else{
+				alert('invalid move')
+			}
 		}
+		console.log(newGame.sortedBoard)
 	}
-	console.log(newGame.sortedBoard)
-	
 });
 
 var simulationCount = 0;
@@ -76,14 +81,14 @@ Game.prototype.switchPlayers = function(){
 
 Game.prototype.makeComputerMove = function(
 	){
-	console.log('this is the board')
-	console.log(this.board);
+	// console.log('this is the board')
+	// console.log(this.board);
 	availableMoves = this.getAvailableMoves();
-	console.log(availableMoves)
+	// console.log(availableMoves)
 	//currentPlayer, squareIndex){
 	this.simulate(new Game(this.board), this.currentPlayer)
-	console.log('no winner')
-	console.log(this.winner)
+	// console.log('no winner')
+	// console.log(this.winner)
 	// console.log(currentPlayer) 
 	// marker = document.createTextNode(currentPlayer)
 	// this.board[squareIndex].appendChild(marker)
@@ -110,9 +115,9 @@ Game.prototype.getAvailableMoves = function(){
 
 Game.prototype.simulate = function(simGame, currentPlayer){
 	simGame.winner = true;
-	console.log('fake win')
-	console.log(simGame.winner)
-	console.log(simGame.getAvailableMoves())
+	// console.log('fake win')
+	// console.log(simGame.winner)
+	// console.log(simGame.getAvailableMoves())
 }
 
 Game.prototype.makeMove = function (game, player){
@@ -126,34 +131,53 @@ Game.prototype.sortBoard = function(){
 	return sortedGameBoard
 }
 
-Game.prototype.checkThreeCells = function(arrayOfThreeCells, currentPlayer){
-	if(arrayOfThreeCells[0].innerText === currentPlayer && arrayOfThreeCells[1].innerText === currentPlayer && arrayOfThreeCells[2].innerText === currentPlayer){
-		return true;
+Game.prototype.checkThreeCells = function(arrayOfThreeCells){
+	// console.log(arrayOfThreeCells)
+	if(arrayOfThreeCells[0].innerText === this.currentPlayer && arrayOfThreeCells[0].innerText === arrayOfThreeCells[1].innerText && arrayOfThreeCells[1].innerText === arrayOfThreeCells[2].innerText){
+		return true
 	}
 	else{
 		return false;
 	}
 }
 
-Game.prototype.checkRow = function(rowIndex){
-	return checkThreeCells(row)
+Game.prototype.checkRow = function(rowNumber, sortedGameBoard){
+	row = sortedGameBoard[rowNumber]
+	return this.checkThreeCells(row)
 }
 
-Game.prototype.checkColumn = function(ColumnIndex, sortedGameBoard){
+Game.prototype.checkColumn = function(columnNumber, sortedGameBoard){
 	var column = [];
+	console.log()
 	for(var rowNumber = 0; rowNumber < sortedGameBoard.length; rowNumber++){
-		column.push(assortedBoard[rowNumber][columnNumber])
+		column.push(sortedGameBoard[rowNumber][columnNumber])
 	}
-	return checkThreeCells(column)
+	return this.checkThreeCells(column)
 }
 
 Game.prototype.checkLeftDiagonal = function(sortedGameBoard){
 	var leftDiagonal = [sortedGameBoard[0][0], sortedGameBoard[1][1], sortedGameBoard[2][2]]
-	return checkThreeCells(leftDiagonal)
+	return this.checkThreeCells(leftDiagonal)
 }
 
 Game.prototype.checkRightDiagonal = function(sortedGameBoard){
 	var rightDiagonal = [sortedGameBoard[0][2], sortedGameBoard[1][1], sortedGameBoard[2][0]]
-	return checkThreeCells(rightDiagonal)
+	return this.checkThreeCells(rightDiagonal)
 }
 
+Game.prototype.checkForWinner = function(){
+	console.log('hello?')
+	if(this.checkLeftDiagonal(this.sortedBoard) || this.checkRightDiagonal(this.sortedBoard)){
+		console.log(this.currentPlayer)
+		this.winner = this.currentPlayer;
+		return true
+	}
+	for(var index = 0; index < this.sortedBoard.length; index++){
+		if(this.checkRow(index, this.sortedBoard) || this.checkColumn(index, this.sortedBoard)){
+			console.log('hi')
+			this.winner = this.currentPlayer
+			console.log(this.currentPlayer)
+			return true
+		}
+	}
+}
