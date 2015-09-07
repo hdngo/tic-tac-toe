@@ -1,21 +1,21 @@
 document.addEventListener("DOMContentLoaded", function(){
 
-	var winner;
-	var gameOver = false;
-	var tie = false;
+	// var winner;
+	// var gameOver = false;
+	// var tie = false;
 
-	var turn = 0;
+	// var turn = 0;
 
-	var playerX = {
-		name: "X",
-		score: 0
-	};
-	var playerO = {
-		name: "O",
-		score: 0
-	};
+	// var playerX = {
+	// 	name: "X",
+	// 	score: 0
+	// };
+	// var playerO = {
+	// 	name: "O",
+	// 	score: 0
+	// };
 
-	var currentPlayer = playerX;
+	// var currentPlayer = playerX;
 	
 	var squares = document.getElementsByClassName('square')
 
@@ -80,29 +80,26 @@ Game.prototype.switchPlayers = function(){
 
 Game.prototype.makeComputerMove = function(
 	){
+	if(this.winner){
+		return
+	}
 	availableMoves = this.getAvailableMoves();
 	//currentPlayer, squareIndex){
-	console.log(this.getMoveScores(availableMoves))
+	// console.log(this.getMoveScores(availableMoves))
 
 	for(var possibleMove = 0; possibleMove < availableMoves.length; possibleMove++){
-		// console.log(availableMoves[possibleMove])
-		console.log('hi')
-		// console.log(this.getMoveScores(availableMoves))
+		if(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer)){
+			this.board[(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer))].innerText = this.currentPlayer;
+			break;
+		}
+		console.log('STOP LOOK')
+		console.log(this.currentPlayer)
 	}
+	this.switchPlayers();
 	// this.simulateMove(new Game(this.board), this.currentPlayer)
 
 	// marker = document.createTextNode(currentPlayer)
 	// this.board[squareIndex].appendChild(marker)
-
-	// // return marker
-	// console.log(this.board[squareIndex].innerText)
-	// if(this.board[squareIndex.innerText] === ''){
-	// 	console.log('hi')
-	// }
-	// else{
-	// 	console.log('taken')
-	// }
-
 }
 
 Game.prototype.getAvailableMoves = function(){
@@ -124,12 +121,27 @@ Game.prototype.getMoveScores = function(availableMoves){
 	return moveScores
 }
 
-Game.prototype.simulateMove = function(simGame, currentPlayer){
-	
-	availableMoves = (simGame.getAvailableMoves())
-	// simGame.winner = true;
-	// console.log('fake win')
-	// console.log(simGame.winner)
+Game.prototype.simulateMove = function(simGame, moveIndex, currentPlayer){
+	console.log('the currentplayer is ' +currentPlayer)
+	simGame.board[moveIndex].innerText = simGame.currentPlayer;
+	var moveIndex;
+	if(simGame.checkForWinner()){
+		if(simGame.winner === simGame.humanPlayer){
+			console.log('player will win at ' + moveIndex)
+			console.log('MAKE THIS MOVE NOW')
+			simGame.board[moveIndex].innerText = '';
+			return moveIndex
+		}
+		else{
+			console.log('computer will win at ' + moveIndex)
+		}
+	}
+	simGame.board[moveIndex].innerText = '';
+	return false;
+	// letter = document.createTextNode(simGame.currentPlayer)
+	// simGame.board[moveIndex].appendChild(letter)
+	// simGame.switchPlayers()
+	// console.log(simGame.currentPlayer)
 }
 
 Game.prototype.makeMove = function (game, player){
@@ -143,7 +155,6 @@ Game.prototype.sortBoard = function(){
 }
 
 Game.prototype.checkThreeCells = function(arrayOfThreeCells){
-	// console.log(arrayOfThreeCells)
 	if(arrayOfThreeCells[0].innerText === this.currentPlayer && arrayOfThreeCells[0].innerText === arrayOfThreeCells[1].innerText && arrayOfThreeCells[1].innerText === arrayOfThreeCells[2].innerText){
 		return true
 	}
@@ -177,16 +188,14 @@ Game.prototype.checkRightDiagonal = function(sortedGameBoard){
 
 Game.prototype.checkForWinner = function(){
 	if(this.checkLeftDiagonal(this.sortedBoard) || this.checkRightDiagonal(this.sortedBoard)){
-		console.log(this.currentPlayer)
 		this.winner = this.currentPlayer;
 		return true
 	}
 	for(var index = 0; index < this.sortedBoard.length; index++){
 		if(this.checkRow(index, this.sortedBoard) || this.checkColumn(index, this.sortedBoard)){
-			console.log('hi')
 			this.winner = this.currentPlayer
-			console.log(this.currentPlayer)
 			return true
 		}
 	}
+	return false
 }
