@@ -42,13 +42,12 @@ document.addEventListener("DOMContentLoaded", function(){
 				this.appendChild(letter)
 				newGame.checkForWinner();
 				newGame.switchPlayers();
-				// newGame.makeComputerMove();
+				newGame.makeComputerMove();
 			}
 			else{
 				alert('invalid move')
 			}
 		}
-		console.log(newGame.sortedBoard)
 	}
 });
 
@@ -81,15 +80,17 @@ Game.prototype.switchPlayers = function(){
 
 Game.prototype.makeComputerMove = function(
 	){
-	// console.log('this is the board')
-	// console.log(this.board);
 	availableMoves = this.getAvailableMoves();
-	// console.log(availableMoves)
 	//currentPlayer, squareIndex){
-	this.simulate(new Game(this.board), this.currentPlayer)
-	// console.log('no winner')
-	// console.log(this.winner)
-	// console.log(currentPlayer) 
+	console.log(this.getMoveScores(availableMoves))
+
+	for(var possibleMove = 0; possibleMove < availableMoves.length; possibleMove++){
+		// console.log(availableMoves[possibleMove])
+		console.log('hi')
+		// console.log(this.getMoveScores(availableMoves))
+	}
+	// this.simulateMove(new Game(this.board), this.currentPlayer)
+
 	// marker = document.createTextNode(currentPlayer)
 	// this.board[squareIndex].appendChild(marker)
 
@@ -106,23 +107,33 @@ Game.prototype.makeComputerMove = function(
 
 Game.prototype.getAvailableMoves = function(){
 	availableMoves = [];
-	for(squareIndex in this.board){
-		if(this.board[squareIndex].innerText === '')
-			availableMoves.push(squareIndex)
+	for(var availableMoveIndex = 0; availableMoveIndex < this.board.length; availableMoveIndex++){
+		if(this.board[availableMoveIndex].innerText === ''){
+			availableMoves.push(availableMoveIndex)
+		}
 	}
 	return availableMoves
 }
 
-Game.prototype.simulate = function(simGame, currentPlayer){
-	simGame.winner = true;
+// for in starts at 0
+Game.prototype.getMoveScores = function(availableMoves){
+	moveScores = {}
+	for(var availableMoveIndex = 0; availableMoveIndex< availableMoves.length; availableMoveIndex++){
+		moveScores[availableMoves[availableMoveIndex]] = 0
+	}
+	return moveScores
+}
+
+Game.prototype.simulateMove = function(simGame, currentPlayer){
+	
+	availableMoves = (simGame.getAvailableMoves())
+	// simGame.winner = true;
 	// console.log('fake win')
 	// console.log(simGame.winner)
-	// console.log(simGame.getAvailableMoves())
 }
 
 Game.prototype.makeMove = function (game, player){
 	marker = document.createTextNode(player)	
-	console.log(player)
 	this.board[1].appendChild(marker)
 }
 
@@ -148,7 +159,6 @@ Game.prototype.checkRow = function(rowNumber, sortedGameBoard){
 
 Game.prototype.checkColumn = function(columnNumber, sortedGameBoard){
 	var column = [];
-	console.log()
 	for(var rowNumber = 0; rowNumber < sortedGameBoard.length; rowNumber++){
 		column.push(sortedGameBoard[rowNumber][columnNumber])
 	}
@@ -166,7 +176,6 @@ Game.prototype.checkRightDiagonal = function(sortedGameBoard){
 }
 
 Game.prototype.checkForWinner = function(){
-	console.log('hello?')
 	if(this.checkLeftDiagonal(this.sortedBoard) || this.checkRightDiagonal(this.sortedBoard)){
 		console.log(this.currentPlayer)
 		this.winner = this.currentPlayer;
