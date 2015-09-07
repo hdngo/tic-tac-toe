@@ -25,15 +25,29 @@ document.addEventListener("DOMContentLoaded", function(){
 
 
 	var newGame = new Game(squares);
-	newGame.makeComputerMove(newGame.currentPlayer, 1);
+	// newGame.makeComputerMove(newGame.currentPlayer, 1);
 	for(var squareNumber = 0; squareNumber < squares.length; squareNumber ++){
-		squares[squareNumber].addEventListener('click', newGame.validateMove);
+		squares[squareNumber].addEventListener('click', makePlayerMove);
+
+
 	}
 
-	// debugger
+	function makePlayerMove(){
+		if(this.innerText === ''){
+			letter = document.createTextNode(newGame.currentPlayer)
+			this.appendChild(letter)
+			newGame.switchPlayers();
+			newGame.makeComputerMove();
+		}
+		else{
+			alert('invalid move')
+		}
+	}
 
-
+	
 });
+
+// game objects
 
 function Game(board){
 	this.winner = null;
@@ -44,28 +58,53 @@ function Game(board){
 	this.currentPlayer = this.humanPlayer;
 }
 
-Game.prototype.validateMove = function(){
-	if (this.innerText == ''){
-		console.log('okay you can do that')
+Game.prototype.switchPlayers = function(){
+	if(this.currentPlayer === this.humanPlayer){
+		this.currentPlayer = this.computerPlayer
 	}
-	else{
-		console.log('invalid move pal')
+	else {
+		this.currentPlayer = this.humanPlayer
 	}
+	this.turn++;
 }
 
-Game.prototype.makeComputerMove = function(currentPlayer, squareIndex){
-	console.log(currentPlayer) 
-	marker = document.createTextNode(currentPlayer)
-	this.board[squareIndex].appendChild(marker)
+Game.prototype.makeComputerMove = function(
+	){
+	console.log('this is the board')
+	console.log(this.board);
+	availableMoves = this.getAvailableMoves();
+	console.log(availableMoves)
+	//currentPlayer, squareIndex){
 
-	// return marker
-	console.log(this.board[squareIndex].innerText)
-	if(this.board[squareIndex.innerText] === ''){
-		console.log('hi')
+
+	// console.log(currentPlayer) 
+	// marker = document.createTextNode(currentPlayer)
+	// this.board[squareIndex].appendChild(marker)
+
+	// // return marker
+	// console.log(this.board[squareIndex].innerText)
+	// if(this.board[squareIndex.innerText] === ''){
+	// 	console.log('hi')
+	// }
+	// else{
+	// 	console.log('taken')
+	// }
+
+}
+
+Game.prototype.getAvailableMoves = function(){
+	availableMoves = [];
+	for(squareIndex in this.board){
+		if(this.board[squareIndex].innerText === '')
+			availableMoves.push(squareIndex)
 	}
-	else{
-		console.log('taken')
-	}
+	return availableMoves
+}
+
+Game.prototype.makeMove = function (game, player){
+	marker = document.createTextNode(player)	
+	console.log(player)
+	this.board[1].appendChild(marker)
 }
 
 
