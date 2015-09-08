@@ -1,22 +1,5 @@
 document.addEventListener("DOMContentLoaded", function(){
 
-	// var winner;
-	// var gameOver = false;
-	// var tie = false;
-
-	// var turn = 0;
-
-	// var playerX = {
-	// 	name: "X",
-	// 	score: 0
-	// };
-	// var playerO = {
-	// 	name: "O",
-	// 	score: 0
-	// };
-
-	// var currentPlayer = playerX;
-	
 	var squares = document.getElementsByClassName('square')
 
 	var takenSquares = document.getElementsByClassName('square taken');
@@ -33,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function(){
 	}
 
 	function makePlayerMove(){
-		if(newGame.winner){
+		if(newGame.winner || newGame.tie){
 			return
 		}
 		else{
@@ -41,8 +24,14 @@ document.addEventListener("DOMContentLoaded", function(){
 				letter = document.createTextNode(newGame.currentPlayer)
 				this.appendChild(letter)
 				newGame.checkForWinner();
+				newGame.checkForTie();
+				if(newGame.winner || newGame.Tie){
+					return
+				}
+				else{
 				newGame.switchPlayers();
 				newGame.makeComputerMove();
+				}
 			}
 			else{
 				alert('invalid move')
@@ -81,26 +70,15 @@ Game.prototype.switchPlayers = function(){
 
 Game.prototype.makeComputerMove = function(
 	){
-	if(this.winner){
-		return
-	}
 	availableMoves = this.getAvailableMoves();
-	//currentPlayer, squareIndex){
-	// console.log(this.getMoveScores(availableMoves))
 
 	for(var possibleMove = 0; possibleMove < availableMoves.length; possibleMove++){
 		if(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer)){
 			this.board[(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer))].innerText = this.currentPlayer;
 			break;
 		}
-		console.log('STOP LOOK')
-		console.log(this.currentPlayer)
 	}
 	this.switchPlayers();
-	// this.simulateMove(new Game(this.board), this.currentPlayer)
-
-	// marker = document.createTextNode(currentPlayer)
-	// this.board[squareIndex].appendChild(marker)
 }
 
 Game.prototype.getAvailableMoves = function(){
@@ -123,26 +101,31 @@ Game.prototype.getMoveScores = function(availableMoves){
 }
 
 Game.prototype.simulateMove = function(simGame, moveIndex, currentPlayer){
-	console.log('the currentplayer is ' +currentPlayer)
-	simGame.board[moveIndex].innerText = simGame.currentPlayer;
-	var moveIndex;
-	if(simGame.checkForWinner()){
-		if(simGame.winner === simGame.humanPlayer){
-			console.log('player will win at ' + moveIndex)
-			console.log('MAKE THIS MOVE NOW')
-			simGame.board[moveIndex].innerText = '';
-			return moveIndex
-		}
-		else{
-			console.log('computer will win at ' + moveIndex)
-		}
+	console.log(currentPlayer)
+	simGame.board[moveIndex].innerText = currentPlayer;
+	console.log(currentPlayer + 'appended to square' + moveIndex)
+	console.log(simGame.board[moveIndex].innerText)
+	simGame.checkForWinner();
+	if(simGame.winner === simGame.humanPlayer){
+		console.log('player will win at ' + moveIndex)
+		return 1
+	}	
+	else if(simGame.Winner === simGame.computerPlayer){
+		// console.log('the computer may win!')
+		return -1
 	}
-	simGame.board[moveIndex].innerText = '';
+	else if(simGame.tie){
+		// console.log('no moves')
+		return 0
+	}
+	else{
+		console.log(this.board)
+		this.switchPlayers();
+		console.log(this.currentPlayer)
+		debugger
+	// simGame.board[moveIndex].innerText = '';
 	return false;
-	// letter = document.createTextNode(simGame.currentPlayer)
-	// simGame.board[moveIndex].appendChild(letter)
-	// simGame.switchPlayers()
-	// console.log(simGame.currentPlayer)
+	}
 }
 
 Game.prototype.makeMove = function (game, player){
@@ -187,17 +170,18 @@ Game.prototype.checkRightDiagonal = function(sortedGameBoard){
 	return this.checkThreeCells(rightDiagonal)
 }
 
-Game.prototype.checkIfBoardIsFilled = function(){
+Game.prototype.checkForTie = function(){
 	count = 0;
 	for(var squareIndex =0; squareIndex < this.board.length; squareIndex++){
 		if(this.board[squareIndex].innerText !== ''){
 			count++;
 		}
 	}
-	if(count === 9){
-		return true
+	if(count === 9 && !this.checkForWinner()){
+		this.tie = true;
+		return true;
 	}
-	else{
+	else if(count !== 9){
 		return false
 	}
 }
