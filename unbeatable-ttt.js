@@ -71,12 +71,15 @@ Game.prototype.switchPlayers = function(){
 Game.prototype.makeComputerMove = function(
 	){
 	availableMoves = this.getAvailableMoves();
-
+	availableMovesAndScores = this.getMoveScores(availableMoves)
+	console.log(availableMovesAndScores)
+	debugger
 	for(var possibleMove = 0; possibleMove < availableMoves.length; possibleMove++){
-		if(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer)){
-			this.board[(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer))].innerText = this.currentPlayer;
-			break;
-		}
+			console.log('return value')
+			console.log(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer))
+			availableMovesAndScores[availableMoves[possibleMove]] = this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer)
+			console.log(availableMovesAndScores)
+			debugger		
 	}
 	this.switchPlayers();
 }
@@ -101,10 +104,10 @@ Game.prototype.getMoveScores = function(availableMoves){
 }
 
 Game.prototype.simulateMove = function(simGame, moveIndex, currentPlayer){
-	console.log(currentPlayer)
+	// console.log(currentPlayer)
 	simGame.board[moveIndex].innerText = currentPlayer;
-	console.log(currentPlayer + 'appended to square' + moveIndex)
-	console.log(simGame.board[moveIndex].innerText)
+	// console.log(currentPlayer + 'appended to square' + moveIndex)
+	// console.log(simGame.board[moveIndex].innerText)
 	simGame.checkForWinner();
 	if(simGame.winner === simGame.humanPlayer){
 		console.log('player will win at ' + moveIndex)
@@ -119,12 +122,11 @@ Game.prototype.simulateMove = function(simGame, moveIndex, currentPlayer){
 		return 0
 	}
 	else{
-		console.log(this.board)
-		this.switchPlayers();
-		console.log(this.currentPlayer)
-		debugger
-	// simGame.board[moveIndex].innerText = '';
-	return false;
+		// console.log(this.board)
+		// this.switchPlayers();
+		// console.log(this.currentPlayer)
+	simGame.board[moveIndex].innerText = '';
+	return 5;
 	}
 }
 
