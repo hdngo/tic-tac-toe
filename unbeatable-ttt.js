@@ -60,6 +60,7 @@ var simulationCount = 0;
 
 function Game(board){
 	this.winner,
+	this.tie,
 	this.turn = 0;
 	this.board = board,
 	this.humanPlayer = "X",
@@ -184,6 +185,21 @@ Game.prototype.checkLeftDiagonal = function(sortedGameBoard){
 Game.prototype.checkRightDiagonal = function(sortedGameBoard){
 	var rightDiagonal = [sortedGameBoard[0][2], sortedGameBoard[1][1], sortedGameBoard[2][0]]
 	return this.checkThreeCells(rightDiagonal)
+}
+
+Game.prototype.checkIfBoardIsFilled = function(){
+	count = 0;
+	for(var squareIndex =0; squareIndex < this.board.length; squareIndex++){
+		if(this.board[squareIndex].innerText !== ''){
+			count++;
+		}
+	}
+	if(count === 9){
+		return true
+	}
+	else{
+		return false
+	}
 }
 
 Game.prototype.checkForWinner = function(){
