@@ -72,14 +72,13 @@ Game.prototype.makeComputerMove = function(
 	){
 	availableMoves = this.getAvailableMoves();
 	availableMovesAndScores = this.getMoveScores(availableMoves)
-	console.log(availableMovesAndScores)
-	debugger
 	for(var possibleMove = 0; possibleMove < availableMoves.length; possibleMove++){
 			console.log('return value')
-			console.log(this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer))
+			//go through each move and update the score
+			//return the updated game for each, call the check function on it, otherwise repeat the 
+			//process
 			availableMovesAndScores[availableMoves[possibleMove]] = this.simulateMove(new Game(this.board), availableMoves[possibleMove], this.currentPlayer)
-			console.log(availableMovesAndScores)
-			debugger		
+	debugger
 	}
 	this.switchPlayers();
 }
@@ -103,31 +102,15 @@ Game.prototype.getMoveScores = function(availableMoves){
 	return moveScores
 }
 
-Game.prototype.simulateMove = function(simGame, moveIndex, currentPlayer){
-	// console.log(currentPlayer)
-	simGame.board[moveIndex].innerText = currentPlayer;
-	// console.log(currentPlayer + 'appended to square' + moveIndex)
-	// console.log(simGame.board[moveIndex].innerText)
-	simGame.checkForWinner();
-	if(simGame.winner === simGame.humanPlayer){
-		console.log('player will win at ' + moveIndex)
-		return 1
-	}	
-	else if(simGame.Winner === simGame.computerPlayer){
-		// console.log('the computer may win!')
-		return -1
-	}
-	else if(simGame.tie){
-		// console.log('no moves')
-		return 0
-	}
-	else{
-		// console.log(this.board)
-		// this.switchPlayers();
-		// console.log(this.currentPlayer)
-	simGame.board[moveIndex].innerText = '';
-	return 5;
-	}
+//have a simulator function that returns a game object, check if there's a value from that
+	//the simulator function makes the move and calls the check for winner/tie and returns the game with the update status so that we can call win/loss
+
+Game.prototype.simulateGame = function(){
+
+}
+Game.prototype.simulateMove = function(parentGame, moveIndex, currentPlayer){
+	console.log(moveIndex)
+	console.log(currentPlayer)
 }
 
 Game.prototype.makeMove = function (game, player){
