@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function(){
 		squares[squareNumber].addEventListener('click', makePlayerMove);
 	}
 
+
 	function makePlayerMove(){
 		if(newGame.winner || newGame.tie){
 			return
@@ -35,10 +36,11 @@ document.addEventListener("DOMContentLoaded", function(){
 				//if there is no winner after the player's move, execute the computer's
 				else{
 				newGame.switchPlayers();
-				newGame.makeComputerMove();
+				newGame.makeComputerMove(newGame.turn);
 				//check to see if the computer made a winning move
 				flattenedBoard = generateFlattenedDomBoard(newGame.board)
 				checkForWinner(flattenedBoard);
+				newGame.switchPlayers();
 				}
 			}
 			else{
@@ -75,71 +77,70 @@ Game.prototype.switchPlayers = function(){
 	this.turn++;
 }
 
-Game.prototype.makeComputerMove = function(
-	){
-	// console.log('current player: ' + this.currentPlayer)
-	// console.log('board after the player moved')
+Game.prototype.checkPlayersFirstMove = function(){
+	playersFirstMove = {}
+	currentBoard = sortBoard(generateFlattenedDomBoard(this.board))
+	for(var rowIndex = 0; rowIndex < currentBoard.length; rowIndex++){
+		for(var colIndex = 0; colIndex < currentBoard.length; colIndex++){
+			if(currentBoard[rowIndex][colIndex] === "X"){
+				playersFirstMove['row'] = rowIndex
+				playersFirstMove['col'] = colIndex
+				return playersFirstMove;
+			}
+		}
+	}
+}
+
+Game.prototype.makeComputerMove = function(turn){
+	if(turn === 1){
+		playersFirstMove = this.checkPlayersFirstMove()
+		if(this.checkForCenterMove(playersFirstMove)){
+			this.makeComputerCornerMove()
+		}
+		else if(this.checkForCornerMove(playersFirstMove)){
+			this.makeComputerCenterMove()
+		}
+		else if(!this.checkForCenterMove(playersFirstMove) && !this.checkForCornerMove(playersFirstMove)){
+			this.makeComputerCenterMove();
+		}
+	}
 	flattenedBoard = generateFlattenedDomBoard(this.board)
-	// console.log('available squares left')
-	// console.log(getAvailableMoves(flattenedBoard))
+
 	availableMoves = getAvailableMoves(flattenedBoard)
 
+}
 
-	//select the index of the move with the greatest score
-	//show the available moves and scores pick the index that has the greatest score
-	availableMovesWithScores = {}
-	for(var moveIndex = 0; moveIndex < availableMoves.length; moveIndex++){
-		// console.log('make a move at square ' + availableMoves[moveIndex]);
-
-		//slice can essentially 'clone' an array
-		simulatedBoard = flattenedBoard.slice()
-		//make a move and then grab the score
-		simulatedBoard[availableMoves[moveIndex]] = this.currentPlayer;
-		availableMovesWithScores[availableMoves[moveIndex]] = miniMax(simulatedBoard, availableMoves[moveIndex], this.currentPlayer, 0)
-		console.log('SCORE SCORE SCORE')
-		console.log(availableMovesWithScores)
+Game.prototype.checkForCenterMove = function(move){
+	if(move['row'] == 1 && move['col'] == 1){
+		return true
 	}
 }
 
-
-function miniMax(simulatedBoard, moveIndex, playerMark, turn){
-	// console.log('filled in square ' + moveIndex + ' with an ' + playerMark)
-	// console.log(simulatedBoard)
-	if(checkForWinner(simulatedBoard)){
-		potentialWinner = checkForWinner(simulatedBoard)
-		// console.log(potentialWinner + ' will win next move')
-		winner = checkForWinner(simulatedBoard)
-		if(winner === "X"){
-			return (10 - turn);
-		}
-		else if(winner === "O"){
-			return (-10 - turn);
+Game.prototype.checkForCornerMove = function(move){
+	if(move['row'] == 0){
+		if(move['col'] == 0 || move['col'] == 2){
+			return true
 		}
 	}
-	else{
-		//loop thru the available moves, grab the scores for the next ones, and based on the player, pick the score
-		console.log('turn number ' + turn)
-		console.log(simulatedBoard)
-		debugger
-		nextSimulatedBoard = simulatedBoard.slice()
-		availableMovesWithScores = {}
-		availableMoves = getAvailableMoves(nextSimulatedBoard)
-		for(var index = 0; index < availableMoves.length; index++){
-			if(playerMark === "X"){
-				nextSimulatedBoard[availableMoves[index]] = "O"
-							availableMovesWithScores[availableMoves[index]] = miniMax(nextSimulatedBoard, availableMoves[index], "O", turn + 1)
-							break;	
-			}
-			else if(playerMark === "O"){
-				nextSimulatedBoard[availableMoves[index]] = "X"
-				availableMovesWithScores[availableMoves[index]] = miniMax(nextSimulatedBoard, availableMoves[index], "X", turn + 1) 
-				break;
-			}
+	else if(move['row'] == 2){
+		if(move['col'] == 0 || move['col'] == 2){
+			return true
 		}
 	}
-
 }
 
+Game.prototype.makeComputerCenterMove = function(){
+	//make the computer place an 'o' in the center
+	this.board[4].innerText = this.computerPlayer;
+}
+
+Game.prototype.makeComputerCornerMove = function(){
+	//pick a random index that corresponds to a corner square from the board (0, 2, 6, 8)
+	cornerSquareIndices = [0, 2, 6, 8]
+	randomIndexSelection = Math.floor(Math.random() * 4)
+	corner = cornerSquareIndices[randomIndexSelection]
+	this.board[corner].innerText = this.computerPlayer;
+}
 ////////
 function isNotEmpty(cell, index, array){
 	return cell !== '';
@@ -217,7 +218,6 @@ function getAvailableMoves(flattenedBoard){
 
 function checkForWinner(board){
 	sortedBoard = sortBoard(board);
-	console.log(sortedBoard)
 	if(checkLeftDiagonal(sortedBoard)){
 		return checkLeftDiagonal(sortedBoard)
 	}
