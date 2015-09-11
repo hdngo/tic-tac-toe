@@ -110,7 +110,8 @@ Game.prototype.makeComputerMove = function(turn){
 
 		flattenedBoard = generateFlattenedDomBoard(this.board)
 		availableMoves = getAvailableMoves(flattenedBoard)
-
+		console.log('available')
+		console.log(availableMoves)
 		winnerAfterNextMove = false;
 		for(var availableMoveIndex = 0; availableMoveIndex < availableMoves.length; availableMoveIndex++){
 			//try computer move first
@@ -141,7 +142,9 @@ Game.prototype.makeComputerMove = function(turn){
 			console.log('make the computer make a leading move!')
 			//check diagonal first
 			this.checkDiagonalsForPotentialPlayerWin();
-			this.makeComputerEdgeMove()
+			
+			this.makeRandomComputerCornerMove();
+			// this.makeComputerEdgeMove()
 		}
 		//check if computer can win in 1 move, make it if there is one
 
@@ -189,7 +192,7 @@ Game.prototype.checkDiagonalsForPotentialPlayerWin = function(){
 	rightDiagXCount = 0;
 	leftDiagonal = this.getLeftDiagonal();
 	rightDiagonal = this.getRightDiagonal();
-	console.log(leftDiagonal.length)
+	console.log('available corners')
 	for(var diagonalIndex = 0; diagonalIndex < leftDiagonal.length; leftDiagonal++){
 		if(leftDiagonal[diagonalIndex] === "X"){
 			console.log('x in left')
@@ -208,6 +211,25 @@ Game.prototype.checkDiagonalsForPotentialPlayerWin = function(){
 Game.prototype.makeComputerCenterMove = function(){
 	//make the computer place an 'o' in the center
 	this.board[4].innerText = this.computerPlayer;
+}
+
+Game.prototype.getAvailableCorners = function(){
+	var cornerSquareIndices = [0, 2, 6, 8]
+	availableCornerSquareIndices = []
+	for(var cornerSquareIndice = 0; cornerSquareIndice < cornerSquareIndices.length; cornerSquareIndice++){
+		if(this.board[cornerSquareIndices[cornerSquareIndice]].innerText === ''){
+			availableCornerSquareIndices.push(cornerSquareIndices[cornerSquareIndice])
+		}
+	}
+	console.log(availableCornerSquareIndices)
+	return availableCornerSquareIndices
+}
+
+Game.prototype.makeRandomComputerCornerMove = function(){
+	availableCorners = this.getAvailableCorners();
+	randomCornerIndexSelection = Math.floor(Math.random() * availableCorners.length)
+	corner = availableCorners[randomCornerIndexSelection]
+	this.board[corner].innerText = this.computerPlayer; 
 }
 
 Game.prototype.makeComputerCornerMove = function(){
