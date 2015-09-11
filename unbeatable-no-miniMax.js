@@ -117,54 +117,97 @@ Game.prototype.makeComputerMove = function(turn){
 	else{
 		//for each available move, fake it, check if there's a win, if there is with that move
 		//execute the following
-
-		flattenedBoard = generateFlattenedDomBoard(this.board)
-		availableMoves = getAvailableMoves(flattenedBoard)
-		console.log(availableMoves)
-		winnerAfterNextMove = false;
-		winIndex = null;
-		blockIndex = null;
-		//currently the loop checks each move and sees if there will be a win at a spot for the computer and player, if not computer, it checks the player and quickly blocks it, but the computer has to go through the whole loop, and find the index at which there is a win if any
-
-		for(var availableMoveIndex = 0; availableMoveIndex < availableMoves.length; availableMoveIndex++){
-			//try computer move first
-			this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
-			if(checkForWinner(generateFlattenedDomBoard(this.board))){
-				winnerAfterNextMove = true;
-				winIndex = availableMoves[availableMoveIndex]
-				console.log('win here' + winIndex)
-
-				// this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
-			}	
-			//make fake player move
-			this.board[availableMoves[availableMoveIndex]].innerText = this.humanPlayer
-			if(checkForWinner(generateFlattenedDomBoard(this.board))){
-				console.log('should block at ' + availableMoves[availableMoveIndex])
-				winnerAfterNextMove = true;
-				blockIndex = availableMoves[availableMoveIndex]
-				// this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
-			}			
-			this.board[availableMoves[availableMoveIndex]].innerText = ''
-		}
-		console.log('win index' + winIndex + ' block index ' + blockIndex)
-		
-		if(winIndex && blockIndex){
-			this.board[winIndex].innerText = this.computerPlayer;
-		}
-		else if(winIndex && !blockIndex){
-			this.board[winIndex].innerText = this.computerPlayer;
-		}
-		else if(!winIndex && blockIndex){
-			this.board[blockIndex].innerText = this.computerPlayer;
-		}
-		else if(!winIndex && !blockIndex){
-			//check diagonal first
-			// this.checkDiagonalsForPotentialPlayerWin();
-			if(this.getAvailableCorners().length !== 0){
-				this.makeRandomComputerCornerMove()
+		if(turn === 3){
+			stateOfDiagonals = this.checkDiagonalsForPotentialPlayerWin();
+			console.log(stateOfDiagonals)
+			if(stateOfDiagonals['leftDiagXCount'] === 2 && stateOfDiagonals['leftDiagOCount'] === 1){
+				console.log('need to address this')
+				//make edge move where available
+				return
+			}
+			else if(stateOfDiagonals['rightDiagXCount'] === 2 && stateOfDiagonals['rightDiagOCount'] === 1){
+				console.log('also need to address this')
+				//make edge move next to the x
+				return
+			}
+			else if(stateOfDiagonals['leftDiagXCount'] === 2 && stateOfDiagonals['leftDiagOCount'] == 0){
+				this.board[8].innerText = this.computerPlayer
+				return
+			}
+			else if(stateOfDiagonals['rightDiagXCount'] === 2 && stateOfDiagonals['rightDiagOCount'] ===0){
+				//make available edge move
+				this.board[6].innerText = this.computerPlayer
+				return
+			}
+			else if((stateOfDiagonals['leftDiagXCount'] === 1 && stateOfDiagonals['leftDiagOCount'] === 1) || (stateOfDiagonals['rightDiagXCount'] === 1 && stateOfDiagonals['rightDiagOCount'] === 1)){
+				// this.makeComputerEdgeMove();
+				this.makeWinningOrBlockingMove();
+				return
 			}
 		}
+
+		this.makeWinningOrBlockingMove();
 	}	
+}
+
+Game.prototype.getIndexOfComputersFirstMove = function(){
+	firstMoveIndex = null;
+	for(var index = 0; index < this.board.length; oIndex++){
+		if(this.board[oIndex].innerText === "O"){
+			firstMoveIndex = index;
+		}
+	}
+	// if it's at the top left(0), return either 1 or 3
+	// if it's in the middle, return either 1, 3, 5, or 7 (make an edge move)
+	// if it's at the top right(2), return either 1 or 5
+	// if it's at the bottom left, return either 3 or 7
+	// bottom right, return either 5 or 7
+}
+
+Game.prototype.makeWinningOrBlockingMove = function(){
+			flattenedBoard = generateFlattenedDomBoard(this.board)
+			availableMoves = getAvailableMoves(flattenedBoard)
+			winnerAfterNextMove = false;
+			winIndex = null;
+			blockIndex = null;
+			//currently the loop checks each move and sees if there will be a win at a spot for the computer and player, if not computer, it checks the player and quickly blocks it, but the computer has to go through the whole loop, and find the index at which there is a win if any
+
+			for(var availableMoveIndex = 0; availableMoveIndex < availableMoves.length; availableMoveIndex++){
+				//try computer move first
+				this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
+				if(checkForWinner(generateFlattenedDomBoard(this.board))){
+					winnerAfterNextMove = true;
+					winIndex = availableMoves[availableMoveIndex]
+					console.log('win here' + winIndex)
+
+					// this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
+				}	
+				//make fake player move
+				this.board[availableMoves[availableMoveIndex]].innerText = this.humanPlayer
+				if(checkForWinner(generateFlattenedDomBoard(this.board))){
+					console.log('should block at ' + availableMoves[availableMoveIndex])
+					winnerAfterNextMove = true;
+					blockIndex = availableMoves[availableMoveIndex]
+					// this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
+				}			
+				this.board[availableMoves[availableMoveIndex]].innerText = ''
+			}
+			console.log('win index' + winIndex + ' block index ' + blockIndex)
+
+			//if theres a win index, make it first, if there's only a loss, block it
+	 	 if(winIndex !== null){
+	 	 	this.board[winIndex].innerText = this.computerPlayer
+	 	 	return
+	 	 }
+	 	 else if(winIndex === null && blockIndex !== null){
+	 	 	this.board[blockIndex].innerText = this.computerPlayer
+	 	 	return
+	 	 }
+	 	 else{
+	 	 		if(this.getAvailableCorners().length !== 0){
+	 	 			this.makeRandomComputerCornerMove()
+	 	 		}
+	 	 }
 }
 
 Game.prototype.checkForCenterMove = function(move){
@@ -186,32 +229,39 @@ Game.prototype.checkForCornerMove = function(move){
 	}
 }
 
-// Game.prototype.getLeftDiagonal = function(){
-// 	flattenedBoard = generateFlattenedDomBoard(this.board)
-// 	return [flattenedBoard[0], flattenedBoard[4], flattenedBoard[8]] 
-// }
+Game.prototype.getLeftDiagonal = function(){
+	flattenedBoard = generateFlattenedDomBoard(this.board)
+	return [flattenedBoard[0], flattenedBoard[4], flattenedBoard[8]] 
+}
 
-// Game.prototype.getRightDiagonal = function(){
-// 	flattenedBoard = generateFlattenedDomBoard(this.board)
-// 	return [flattenedBoard[2], flattenedBoard[4], flattenedBoard[6]] 
-// }
+Game.prototype.getRightDiagonal = function(){
+	flattenedBoard = generateFlattenedDomBoard(this.board)
+	return [flattenedBoard[2], flattenedBoard[4], flattenedBoard[6]] 
+}
 
-// Game.prototype.checkDiagonalsForPotentialPlayerWin = function(){
-// 	leftDiagXCount = 0;
-// 	rightDiagXCount = 0;
-// 	leftDiagonal = this.getLeftDiagonal();
-// 	rightDiagonal = this.getRightDiagonal();
-// 	console.log('available corners')
-// 	for(var diagonalIndex = 0; diagonalIndex < leftDiagonal.length; leftDiagonal++){
-// 		if(leftDiagonal[diagonalIndex] === "X"){
-// 			console.log('x in left')
-// 		}
-// 		else if(rightDiagonal[diagonalIndex] === "X"){
-// 			console.log('x in right')
-// 		}
-// 		console.log(leftDiagonal[diagonalIndex])
-// 	}
-// }
+Game.prototype.checkDiagonalsForPotentialPlayerWin = function(){
+	leftDiagXCount = 0;
+	leftDiagOCount = 0;
+	rightDiagXCount = 0;
+	rightDiagOCount = 0;
+	leftDiagonal = this.getLeftDiagonal();
+	rightDiagonal = this.getRightDiagonal();
+	for(var diagonalIndex = 0; diagonalIndex < 3; diagonalIndex++){
+		if(leftDiagonal[diagonalIndex] === "X"){
+			leftDiagXCount++;
+		}
+		else if(leftDiagonal[diagonalIndex] === "O"){
+			leftDiagOCount++;
+		}
+		if(rightDiagonal[diagonalIndex] === "X"){
+			rightDiagXCount++;
+		}
+		else if(rightDiagonal[diagonalIndex] === "O"){
+			rightDiagOCount++;
+		}
+	}
+	return {'leftDiagXCount': leftDiagXCount, 'leftDiagOCount': leftDiagOCount, 'rightDiagXCount': rightDiagXCount, 'rightDiagOCount': rightDiagOCount}
+}
 
 
 Game.prototype.makeComputerCenterMove = function(){
@@ -250,6 +300,10 @@ Game.prototype.makeComputerEdgeMove = function(){
 	edgeSquareIndices = [1, 3, 5, 7]
 	randomIndexSelection = Math.floor(Math.random() * 4)
 	edge = edgeSquareIndices[randomIndexSelection]
+	while(this.board[edge].innerText !== ''){
+		randomIndexSelection = Math.floor(Math.random() * 4)
+		edge = edgeSquareIndices[randomIndexSelection]
+	}	
 	this.board[edge].innerText = this.computerPlayer;
 }
 
