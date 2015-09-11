@@ -40,6 +40,16 @@ document.addEventListener("DOMContentLoaded", function(){
 				//check to see if the computer made a winning move
 				flattenedBoard = generateFlattenedDomBoard(newGame.board)
 				checkForWinner(flattenedBoard);
+
+				if(checkForWinner(flattenedBoard)){
+					newGame.winner = newGame.computerPlayer;
+					alert('computer winner')
+					return
+				}
+				if(checkForTie(flattenedBoard)){
+					newGame.tie = true;
+					return
+				}
 				newGame.switchPlayers();
 				}
 			}
@@ -110,53 +120,52 @@ Game.prototype.makeComputerMove = function(turn){
 
 		flattenedBoard = generateFlattenedDomBoard(this.board)
 		availableMoves = getAvailableMoves(flattenedBoard)
-		console.log('available')
 		console.log(availableMoves)
 		winnerAfterNextMove = false;
+		winIndex = null;
+		blockIndex = null;
+		//currently the loop checks each move and sees if there will be a win at a spot for the computer and player, if not computer, it checks the player and quickly blocks it, but the computer has to go through the whole loop, and find the index at which there is a win if any
+
 		for(var availableMoveIndex = 0; availableMoveIndex < availableMoves.length; availableMoveIndex++){
 			//try computer move first
 			this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
 			if(checkForWinner(generateFlattenedDomBoard(this.board))){
-				// winnerAfterNextMove = true;
-				// break;
-				return
-			}			
-			else{
-				this.board[availableMoves[availableMoveIndex]].innerText = ''
-			}
+				winnerAfterNextMove = true;
+				winIndex = availableMoves[availableMoveIndex]
+				console.log('win here' + winIndex)
 
+				// this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
+			}	
+			//make fake player move
 			this.board[availableMoves[availableMoveIndex]].innerText = this.humanPlayer
 			if(checkForWinner(generateFlattenedDomBoard(this.board))){
+				console.log('should block at ' + availableMoves[availableMoveIndex])
 				winnerAfterNextMove = true;
-				console.log('player is about to win if you let him choose square' + availableMoves[availableMoveIndex])
-				this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
-				// break;
-				return
+				blockIndex = availableMoves[availableMoveIndex]
+				// this.board[availableMoves[availableMoveIndex]].innerText = this.computerPlayer
 			}			
-			else{
-				this.board[availableMoves[availableMoveIndex]].innerText = ''
+			this.board[availableMoves[availableMoveIndex]].innerText = ''
+		}
+		console.log('win index' + winIndex + ' block index ' + blockIndex)
+		
+		if(winIndex && blockIndex){
+			this.board[winIndex].innerText = this.computerPlayer;
+		}
+		else if(winIndex && !blockIndex){
+			this.board[winIndex].innerText = this.computerPlayer;
+		}
+		else if(!winIndex && blockIndex){
+			this.board[blockIndex].innerText = this.computerPlayer;
+		}
+		else if(!winIndex && !blockIndex){
+			//check diagonal first
+			// this.checkDiagonalsForPotentialPlayerWin();
+			if(this.getAvailableCorners().length !== 0){
+				this.makeRandomComputerCornerMove()
 			}
 		}
-
-		if(!winnerAfterNextMove){
-			console.log('make the computer make a leading move!')
-			//check diagonal first
-			this.checkDiagonalsForPotentialPlayerWin();
-			
-			this.makeRandomComputerCornerMove();
-			// this.makeComputerEdgeMove()
-		}
-		//check if computer can win in 1 move, make it if there is one
-
-		//check if player will in in 1 move, block it if there is one 
-
-		//make a corner move if its open
-
-		//
 	}	
-
 }
-
 
 Game.prototype.checkForCenterMove = function(move){
 	if(move['row'] == 1 && move['col'] == 1){
@@ -177,39 +186,35 @@ Game.prototype.checkForCornerMove = function(move){
 	}
 }
 
-Game.prototype.getLeftDiagonal = function(){
-	flattenedBoard = generateFlattenedDomBoard(this.board)
-	return [flattenedBoard[0], flattenedBoard[4], flattenedBoard[8]] 
-}
+// Game.prototype.getLeftDiagonal = function(){
+// 	flattenedBoard = generateFlattenedDomBoard(this.board)
+// 	return [flattenedBoard[0], flattenedBoard[4], flattenedBoard[8]] 
+// }
 
-Game.prototype.getRightDiagonal = function(){
-	flattenedBoard = generateFlattenedDomBoard(this.board)
-	return [flattenedBoard[2], flattenedBoard[4], flattenedBoard[6]] 
-}
+// Game.prototype.getRightDiagonal = function(){
+// 	flattenedBoard = generateFlattenedDomBoard(this.board)
+// 	return [flattenedBoard[2], flattenedBoard[4], flattenedBoard[6]] 
+// }
 
-Game.prototype.checkDiagonalsForPotentialPlayerWin = function(){
-	leftDiagXCount = 0;
-	rightDiagXCount = 0;
-	leftDiagonal = this.getLeftDiagonal();
-	rightDiagonal = this.getRightDiagonal();
-	console.log('available corners')
-	for(var diagonalIndex = 0; diagonalIndex < leftDiagonal.length; leftDiagonal++){
-		if(leftDiagonal[diagonalIndex] === "X"){
-			console.log('x in left')
-		}
-		else if(rightDiagonal[diagonalIndex] === "X"){
-			console.log('x in right')
-		}
-		console.log(leftDiagonal[diagonalIndex])
-	}
-	// if(leftDiagXCount === 2 || rightDiagXCount === 2){
-		// console.log('choose a random edge')
-	// }
-}
+// Game.prototype.checkDiagonalsForPotentialPlayerWin = function(){
+// 	leftDiagXCount = 0;
+// 	rightDiagXCount = 0;
+// 	leftDiagonal = this.getLeftDiagonal();
+// 	rightDiagonal = this.getRightDiagonal();
+// 	console.log('available corners')
+// 	for(var diagonalIndex = 0; diagonalIndex < leftDiagonal.length; leftDiagonal++){
+// 		if(leftDiagonal[diagonalIndex] === "X"){
+// 			console.log('x in left')
+// 		}
+// 		else if(rightDiagonal[diagonalIndex] === "X"){
+// 			console.log('x in right')
+// 		}
+// 		console.log(leftDiagonal[diagonalIndex])
+// 	}
+// }
 
 
 Game.prototype.makeComputerCenterMove = function(){
-	//make the computer place an 'o' in the center
 	this.board[4].innerText = this.computerPlayer;
 }
 
@@ -264,11 +269,9 @@ function hasThreeOs(cell, index, array){
 function checkThreeCells(arrayOfThreeCells){
 	if(arrayOfThreeCells.every(isNotEmpty)){
 		if(arrayOfThreeCells.every(hasThreeXs)){
-			console.log('x won')
 			return "X"
 		}
 		else if(arrayOfThreeCells.every(hasThreeOs)){
-			console.log('o won')
 			return "O"
 		}
 	}
