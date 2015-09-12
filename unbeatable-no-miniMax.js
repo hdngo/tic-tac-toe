@@ -169,6 +169,12 @@ Game.prototype.makeComputerMove = function(turn){
 				return
 			}
 			else if((stateOfDiagonals['leftDiagXCount'] === 1 && stateOfDiagonals['leftDiagOCount'] === 1) || (stateOfDiagonals['rightDiagXCount'] === 1 && stateOfDiagonals['rightDiagOCount'] === 1) || (stateOfDiagonals['leftDiagXCount'] === 0 && stateOfDiagonals['rightDiagXCount'] === 0)){
+
+				if(this.checkIfPlayerCanWinNextMove()){
+					this.makeWinningOrBlockingMove();
+					return
+				}
+				else{
 				//should block a corner on the side where there is an x in the middle
 				if(this.board[3].innerText === "X"){
 					possibleCorners = [0, 6]
@@ -192,12 +198,25 @@ Game.prototype.makeComputerMove = function(turn){
 					this.board[corner].innerText = this.computerPlayer
 					return
 				}
+				else if(this.board[1].innerText === "X" || this.board[7].innerText === "X"){
+					possibleEdges = [3, 5]
+					randomEdgeSelection = Math.floor(Math.random() * possibleEdges.length)
+					edge = possibleEdges[randomEdgeSelection]
+					while(this.board[edge].innerText !== ''){
+						randomEdgeSelection = Math.floor(Math.random() * possibleEdges.length)
+						edge= possibleEdges[randomEdgeSelection]
+					}
+					this.board[edge].innerText = this.computerPlayer
+					return
+				}
+				}
 				this.makeWinningOrBlockingMove();
 				return
 			}
 		}
 		//if there aren't any potential ways for a player to win using a diagonal, just follow the typical 'make a winning or blocking move' procedure
 		this.makeWinningOrBlockingMove();
+		return
 	}	
 }
 
@@ -209,6 +228,21 @@ Game.prototype.getIndexOfComputersFirstMove = function(){
 		}
 	}
 	return firstMoveIndex
+}
+
+Game.prototype.checkIfPlayerCanWinNextMove = function(){
+	flattenedBoard = generateFlattenedDomBoard(this.board)
+	availableMoves = getAvailableMoves(flattenedBoard)
+	winnerAfterNextMove = false;
+	for(var availableMoveIndex = 0; availableMoveIndex < availableMoves.length; availableMoveIndex++){
+		//make fake player move
+		this.board[availableMoves[availableMoveIndex]].innerText = this.humanPlayer
+		if(checkForWinner(generateFlattenedDomBoard(this.board))){
+			winnerAfterNextMove = true;
+		}			
+		this.board[availableMoves[availableMoveIndex]].innerText = ''
+	}
+	return winnerAfterNextMove;
 }
 
 Game.prototype.makeWinningOrBlockingMove = function(){
