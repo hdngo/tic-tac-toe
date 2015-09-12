@@ -1,8 +1,9 @@
 //WORKING ON A CLEANER SOLUTION USING MINIMAX, STAY TUNED!
+//if there's no win or block move left, need to pick a random box
 document.addEventListener("DOMContentLoaded", function(){
 
-		var newGameButton = document.getElementById('new-game-btn')
-		newGameButton.addEventListener('click', newGame)
+	// var newGameButton = document.getElementById('new-game-btn')
+	// newGameButton.addEventListener('click', newGame)
 
 	var squares = document.getElementsByClassName('square')
 
@@ -59,14 +60,14 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 
-	function newGame(){
-		for(var cellIndex = 0; cellIndex < squares.length; cellIndex++){
-			squares[cellIndex].innerText = '';
-			squares[cellIndex].classList.remove('taken');
-		}
-		gameOver = false;
-		turn = 0;
-	}
+	// function newGame(){
+	// 	for(var cellIndex = 0; cellIndex < squares.length; cellIndex++){
+	// 		squares[cellIndex].innerText = '';
+	// 		squares[cellIndex].classList.remove('taken');
+	// 	}
+	// 	gameOver = false;
+	// 	turn = 0;
+	// }
 });
 
 function Game(board){
