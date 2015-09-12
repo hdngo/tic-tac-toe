@@ -1,3 +1,4 @@
+//WORKING ON A CLEANER SOLUTION USING MINIMAX, STAY TUNED!
 document.addEventListener("DOMContentLoaded", function(){
 
 		var newGameButton = document.getElementById('new-game-btn')

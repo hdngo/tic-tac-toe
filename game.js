@@ -1,3 +1,4 @@
+// ORIGINAL, beatable game solution
 // document.addEventListener("DOMContentLoaded", function(){
 
 // 	var gameOver = false;

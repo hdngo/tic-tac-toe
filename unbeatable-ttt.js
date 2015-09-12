@@ -1,4 +1,8 @@
+// incomplete solution
 document.addEventListener("DOMContentLoaded", function(){
+
+	var newGameButton = document.getElementById('new-game-btn')
+	newGameButton.addEventListener('click', newGame)
 
 	var squares = document.getElementsByClassName('square')
 
@@ -19,38 +23,52 @@ document.addEventListener("DOMContentLoaded", function(){
 		if(newGame.winner || newGame.tie){
 			return
 		}
-		else{
+		// else{
 			if(this.innerText === ''){
 				letter = document.createTextNode(newGame.currentPlayer)
 				this.appendChild(letter)
 
 				//make the player move, then check to see if there's a win, if there is, 
 				//don't execute the computer's move
-				flattenedBoard = generateFlattenedDomBoard(newGame.board)
-				if(checkForWinner(flattenedBoard)){
-					newGame.winner = newGame.humanPlayer;
-					alert('winner')
+				// flattenedBoard = generateFlattenedDomBoard(newGame.board)
+				// if(checkForWinner(flattenedBoard)){
+				// 	newGame.winner = newGame.currentPlayer;
+				// 	alert('winner' + newGame.winner)
+				// 	return
+				// }
+				// else if(checkForTie(flattenedBoard)){
+				// 	newGame.tie = true;
+				// 	return
+				// }
+				checkIfGameIsOver(newGame)
+				if(newGame.winner || newGame.tie){
 					return
 				}
-				if(checkForTie(flattenedBoard)){
-					newGame.tie = true;
-					return
-				}
-
 				//if there is no winner after the player's move, execute the computer's
 				else{
-				newGame.switchPlayers();
-				// newGame.makeComputerMove();
-				//check to see if the computer made a winning move
-				flattenedBoard = generateFlattenedDomBoard(newGame.board)
-				checkForWinner(flattenedBoard);
+					newGame.switchPlayers();
+					// newGame.makeComputerMove();
+
+					//check to see if the computer made a winning move
+					// flattenedBoard = generateFlattenedDomBoard(newGame.board)
+					// if(checkForWinner(flattenedBoard)){
+					// 	newGame.winner = newGame.currentPlayer;
+					// 	alert('winner' + newGame.winner)
+					// 	return
+					// }
+					// if(checkForTie(flattenedBoard)){
+					// 	newGame.tie = true;
+					// 	return
+					// }
+					checkIfGameIsOver(newGame)
 				}
 			}
+			// }
 			else{
 				alert('invalid move')
 			}			
 		}
-	}
+	// }
 });
 
 // game objects
@@ -85,14 +103,12 @@ Game.prototype.getBestMove = function(
 	//show the available moves and scores pick the index that has the greatest score
 	availableMovesWithScores = {}
 	for(var moveIndex = 0; moveIndex < availableMoves.length; moveIndex++){
-		// console.log('make a move at square ' + availableMoves[moveIndex]);
 
 		//slice can essentially 'clone' an array
 		simulatedBoard = flattenedBoard.slice()
 		//make a move and then grab the score
 		simulatedBoard[availableMoves[moveIndex]] = this.currentPlayer;
 		availableMovesWithScores[availableMoves[moveIndex]] = miniMax(simulatedBoard, availableMoves[moveIndex], this.currentPlayer, 0)
-		console.log('SCORE SCORE SCORE')
 		console.log(availableMovesWithScores)
 	}
 }
@@ -123,11 +139,9 @@ function hasThreeOs(cell, index, array){
 function checkThreeCells(arrayOfThreeCells){
 	if(arrayOfThreeCells.every(isNotEmpty)){
 		if(arrayOfThreeCells.every(hasThreeXs)){
-			console.log('x won')
 			return "X"
 		}
 		else if(arrayOfThreeCells.every(hasThreeOs)){
-			console.log('o won')
 			return "O"
 		}
 	}
@@ -184,7 +198,6 @@ function getAvailableMoves(flattenedBoard){
 
 function checkForWinner(board){
 	sortedBoard = sortBoard(board);
-	console.log(sortedBoard)
 	if(checkLeftDiagonal(sortedBoard)){
 		return checkLeftDiagonal(sortedBoard)
 	}
@@ -203,10 +216,36 @@ function checkForWinner(board){
 
 function checkForTie(board){
 	if(getAvailableMoves(board).length === 0 && !checkForWinner(flattenedBoard)){
-		alert('we have a tie!')
 		return true;
 	}
 }
+
+function checkIfGameIsOver(game){
+	flattenedBoard = generateFlattenedDomBoard(game.board)
+	if(checkForWinner(flattenedBoard)){
+		game.winner = game.currentPlayer;
+		alert('winner' + game.winner)
+		return true
+	}
+	if(checkForTie(flattenedBoard)){
+		game.tie = true;
+		alert('we have a tie')
+		return true
+	}
+	return false
+}
+
+function newGame(){
+	for(var cellIndex = 0; cellIndex < squares.length; cellIndex++){
+		squares[cellIndex].innerText = '';
+		squares[cellIndex].classList.remove('taken');
+	}
+	gameOver = false;
+	turn = 0;
+}
+
+
+
 //more pseudocode
 // function getBestMove( currentBoard, cpu, 0);
 
@@ -225,4 +264,4 @@ function checkForTie(board){
 	//			}
 	//  loop through scores array and return min
 
-}
+// }
