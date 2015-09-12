@@ -434,3 +434,22 @@ function checkForTie(board){
 		return true;
 	}
 }
+//more pseudocode
+// function getBestMove( currentBoard, cpu, 0);
+
+
+//function getBestMove( board, currentPlayer, turn number){
+	// Check if game is over
+		// If lose return 1000
+		// Else return turn number
+	// Otherwise
+	//	make scores array --> initalize to big number?
+	//	loop through each possible moves
+			// {
+		//			make the move
+		//			scores[current move] = call function (board, opposite player, turn++)
+		// 			undo current move
+	//			}
+	//  loop through scores array and return min
+
+}
