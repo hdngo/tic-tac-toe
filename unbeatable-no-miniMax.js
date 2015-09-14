@@ -1,9 +1,5 @@
 //WORKING ON A CLEANER SOLUTION USING MINIMAX, STAY TUNED!
-//if there's no win or block move left, need to pick a random box
 document.addEventListener("DOMContentLoaded", function(){
-
-	// var newGameButton = document.getElementById('new-game-btn')
-	// newGameButton.addEventListener('click', newGame)
 
 	var squares = document.getElementsByClassName('square')
 
@@ -60,14 +56,6 @@ document.addEventListener("DOMContentLoaded", function(){
 		}
 	}
 
-	// function newGame(){
-	// 	for(var cellIndex = 0; cellIndex < squares.length; cellIndex++){
-	// 		squares[cellIndex].innerText = '';
-	// 		squares[cellIndex].classList.remove('taken');
-	// 	}
-	// 	gameOver = false;
-	// 	turn = 0;
-	// }
 });
 
 function Game(board){
@@ -277,11 +265,20 @@ Game.prototype.makeWinningOrBlockingMove = function(){
 	 	 	this.board[blockIndex].innerText = this.computerPlayer
 	 	 }
 	 	 else{
+	 	 		
+	 	 		//if there's no winner within the last 2 moves, make a random move
+	 	 		if(availableMoves.length == 2){
+	 	 			randomLastMoveIndex = Math.floor(Math.random() * 2)
+	 	 			randomSquare = availableMoves[randomLastMoveIndex]
+	 	 			this.board[randomSquare].innerText = this.computerPlayer
+	 	 			return
+	 	 		}
+	 	 		//if there's more than 2 moves left, make a random corner move if possibles
 	 	 		if(this.getAvailableCorners().length !== 0){
 	 	 			this.makeRandomComputerCornerMove()
+	 	 			return
 	 	 		}
 	 	 }
-	 	 return
 }
 
 Game.prototype.checkForCenterMove = function(move){
@@ -360,7 +357,6 @@ Game.prototype.makeRandomComputerCornerMove = function(){
 }
 
 Game.prototype.makeComputerCornerMove = function(){
-	//pick a random index that corresponds to a corner square from the board (0, 2, 6, 8)
 	cornerSquareIndices = [0, 2, 6, 8]
 	randomIndexSelection = Math.floor(Math.random() * 4)
 	corner = cornerSquareIndices[randomIndexSelection]
@@ -368,7 +364,6 @@ Game.prototype.makeComputerCornerMove = function(){
 }
 
 Game.prototype.makeComputerEdgeMove = function(){
-	//pick a random index that corresponds to an edge square from the board (1, 3, 5, 7)
 	edgeSquareIndices = [1, 3, 5, 7]
 	randomIndexSelection = Math.floor(Math.random() * 4)
 	edge = edgeSquareIndices[randomIndexSelection]
