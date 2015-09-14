@@ -1,3 +1,14 @@
+Current Implementation of an Unbeatable AI Player
+The computer's first move goes in the center square if the player chooses to go somewhere other than the center first. Otherwise, the computer will place a marker in a corner.
+
+The general procedure following the first move is as follows:
+- Check to see if there are any moves that will lead to the computer winning in the next move, and if there is one, make it.
+- If there are no viable winning moves for the computer (in 1 turn), check to see if it should block a possible win for the player.
+- If there is no possible winner in the next two moves, the computer will either make a move where it can win in two turns by choosing either a diagonal or adjacent edge square. The computer will check however, the current state of the left and right diagonals of the board in order to limit the possible options that the player has while maximizing its chance of winning.
+- Regardless of what the player does, the computer will try to make a winning move.
+
+======= My understanding of the MiniMax algorithm so far =======
+
 Implement the MiniMax algorithm which takes into account the 
 best possible move for the current player.
 
