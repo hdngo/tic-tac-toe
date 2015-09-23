@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function(){
 			return
 		}
 		else{
-			if(this.innerText === ''){
+			if(isEmpty(this)){
 				letter = document.createTextNode(newGame.currentPlayer)
 				this.appendChild(letter)
 				flattenedBoard = generateFlattenedDomBoard(newGame.board)
@@ -92,6 +92,7 @@ Game.prototype.checkPlayersFirstMove = function(){
 	}
 }
 
+//need to make diagonal or edge move in an row/diag/col where there's no X's on 2nd move if possible
 Game.prototype.makeComputerMove = function(turn){
 	if(turn === 1){
 		playersFirstMove = this.checkPlayersFirstMove()
@@ -135,25 +136,25 @@ Game.prototype.makeComputerMove = function(turn){
 			}
 			else if(stateOfDiagonals['leftDiagXCount'] === 2 && stateOfDiagonals['leftDiagOCount'] == 0){
 				//grab the index of the empty diagonal space here
-				if(stateOfDiagonals['leftDiagonal'][0] === ''){
+				if(isEmpty(stateOfDiagonals['leftDiagonal'][0])){
 					this.board[0].innerText = this.computerPlayer
 				}
-				else if(stateOfDiagonals['leftDiagonal'][1] === ''){
+				else if(isEmpty(stateOfDiagonals['leftDiagonal'][1])){
 					this.board[4].innerText = this.computerPlayer
 				}
-				else if(stateOfDiagonals['leftDiagonal'][2] === ''){
+				else if(isEmpty(stateOfDiagonals['leftDiagonal'][2])){
 					this.board[8].innerText = this.computerPlayer
 				}
 				return
 			}
 			else if(stateOfDiagonals['rightDiagXCount'] === 2 && stateOfDiagonals['rightDiagOCount'] ===0){
-				if(stateOfDiagonals['rightDiagonal'][0] === ''){
+				if(isEmpty(stateOfDiagonals['rightDiagonal'][0])){
 					this.board[2].innerText = this.computerPlayer
 				}
-				else if(stateOfDiagonals['rightDiagonal'][1] === ''){
+				else if(isEmpty(stateOfDiagonals['rightDiagonal'][1])){
 					this.board[4].innerText = this.computerPlayer
 				}
-				else if(stateOfDiagonals['rightDiagonal'][2] === ''){
+				else if(isEmpty(stateOfDiagonals['rightDiagonal'][2])){
 					this.board[6].innerText = this.computerPlayer
 				}
 				return
@@ -166,7 +167,10 @@ Game.prototype.makeComputerMove = function(turn){
 				}
 				else{
 				//should block a corner on the side where there is an x in the middle
-				if(this.board[3].innerText === "X"){
+
+				//potential for refactor here, working with this.board, checking if it has an X
+				//can possibly refactor randomCornerSelection part
+				if(checkForX(this.board[3])){
 					possibleCorners = [0, 6]
 					randomCornerSelection = Math.floor(Math.random() * possibleCorners.length)
 					corner = possibleCorners[randomCornerSelection]
@@ -177,7 +181,7 @@ Game.prototype.makeComputerMove = function(turn){
 					this.board[corner].innerText = this.computerPlayer
 					return
 				}
-				else if(this.board[5].innerText === "X"){
+				else if(checkForX(this.board[5])){
 					possibleCorners = [2, 8]
 					randomCornerSelection = Math.floor(Math.random() * possibleCorners.length)
 					corner = possibleCorners[randomCornerSelection]
@@ -188,7 +192,7 @@ Game.prototype.makeComputerMove = function(turn){
 					this.board[corner].innerText = this.computerPlayer
 					return
 				}
-				else if(this.board[1].innerText === "X" || this.board[7].innerText === "X"){
+				else if(checkForX(this.board[1]) || checkForX(this.board[7])){
 					possibleEdges = [3, 5]
 					randomEdgeSelection = Math.floor(Math.random() * possibleEdges.length)
 					edge = possibleEdges[randomEdgeSelection]
@@ -372,6 +376,21 @@ Game.prototype.makeComputerEdgeMove = function(){
 		edge = edgeSquareIndices[randomIndexSelection]
 	}	
 	this.board[edge].innerText = this.computerPlayer;
+}
+
+function checkForX(cell){
+	if(cell.innerText === "X"){
+		return true;
+	}
+}
+
+function isEmpty(cell){
+	if(cell instanceof HTMLElement){
+		return cell.innerText === '';
+	}
+	else{
+		return cell === '';
+	}
 }
 
 function isNotEmpty(cell, index, array){
