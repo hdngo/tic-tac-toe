@@ -93,6 +93,7 @@ Game.prototype.checkPlayersFirstMove = function(){
 }
 
 //need to make diagonal or edge move in an row/diag/col where there's no X's on 2nd move if possible
+//need to make an edge move if theres an available space
 Game.prototype.makeComputerMove = function(turn){
 	if(turn === 1){
 		playersFirstMove = this.checkPlayersFirstMove()
