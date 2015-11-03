@@ -15,7 +15,10 @@ Option 2: If there is a configuration where the opponent can fork, the player sh
 - 8) Empty side: The player plays in a middle square on any of the 4 sides.
 
 #Next Steps
+##MiniMax Algorithm
 One thing I definitely want to get around to is implementing the MiniMax algorithm. I had spent several hours (days even) trying to implement it before, but when attempting to test out my implementation of it, I would receive stack limit errors. One thing I may try to do first is see if I can implement out an Unbeatable AI in Ruby, and then try translating that code into JavaScript. Another alternative would be to do some research into the MiniMax algorithm with Alpha/Beta pruning.
+##Refactor
+Cause there's always room to refactor and make things more dry and modular.
 
 #Audio Credits
 Go to Team Fortress 2 Sounds, check them out [here](http://www.tf2sounds.com/)
