@@ -6,11 +6,6 @@ p.player-marker{
 	font-size:2rem;
 }
 
-#control-window{
-	width: 40%;
-	margin: 0 auto;
-}
-
 ul{
 	list-style: none;
 }
@@ -22,7 +17,7 @@ ul li{
 td{
 	height: 150px;
 	width: 150px;
-	border: 1px solid blue;
+	border: 2px solid #339CC3;
 	text-align:center;
 	font-size:4em;
 }
@@ -31,4 +26,30 @@ td{
 td:hover{
 	background-color: #c8edf4;
 	opacity: .3;
+}
+
+table{
+	margin-top: 60px;
+}
+
+#new-game-btn{
+	display: block;
+	text-align: center;
+	background-color: #fff;
+	margin: 0 auto;
+	border: 2px solid #339CC3;
+	height: 40px;	
+	width: 80px;
+	margin-top: 20px;
+	text-transform: uppercase;
+}
+
+#new-game-btn:hover{
+	color: white;
+	background-color: #339CC3;
+	cursor: pointer;
+}
+
+button:focus{
+	outline: 0;
 }
