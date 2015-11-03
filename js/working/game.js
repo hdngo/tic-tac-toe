@@ -22,10 +22,12 @@ Game.prototype.switchPlayers = function(){
 Game.prototype.updateStatus = function(currentPlayer){
 	if(this.board.checkForWinner(currentPlayer)){
 		this.winner = currentPlayer;
+		failureSound.play();
 		alert(currentPlayer + ' wins')
 	}
 	if(this.board.checkForTie()){
 		this.tie = true;
+		tieSound.play();
 		alert('We have a tie!')
 	}
 	this.isOver();

@@ -12,7 +12,7 @@
 				return
 			}
 			if(this.innerText){
-				alert('already taken')
+				badMoveSound.play();
 			}
 			else{
 				this.innerText = newGame.currentPlayer;
